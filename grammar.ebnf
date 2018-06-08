@@ -1,0 +1,45 @@
+prog = { var_decl | st };
+
+var_decl = "let",  (id_decl);
+id_decl = ID, "=", expr, ";";
+
+st = expr_st 
+  | block_st 
+  | select_st;
+
+expr_st = [expr], ";";  
+block_st = "{", {st}, "}"; 
+select_st = "if", "(", expr, ")", st, ["else", st];
+
+expr = assign;
+
+assign = log_or, assign_ap;
+assign_ap = "=", log_or, assign_ap | EPS;
+
+log_or = logic_and, log_or_ap;
+log_or_ap = ("||"), logic_and, log_or_ap | EPS;
+
+logic_and = eq, logic_and_ap;
+logic_and_ap = ("&&"), eq, logic_and_ap | EPS;
+
+eq = rel, eq_ap;
+eq_ap = ("==" | "!="), rel, eq_ap | EPS;
+
+rel = add, rel_ap;
+rel_ap = (">" | ">=" | "<" | "<="), add, rel_ap | EPS;
+
+add = mult, add_ap;
+add_ap = ("+" | "-"), mult, add_ap | EPS;
+
+mult = unary, mult_ap;
+mult_ap = ("*" | "/" | "%"), unary, mult_ap | EPS;
+
+unary = primary
+  | ("+" | "-" | "!"), primary;
+
+primary = NUMBER
+  | var
+  | parentheses;
+
+parentheses = "(", expr, ")";
+var = ID;
